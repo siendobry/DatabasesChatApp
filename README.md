@@ -1,18 +1,14 @@
 ## Overview
 Skład grupy:
 
-Adam Mężydło, amezydlo@student.agh.edu.pl
-Maciej Sieniek, sieniek@student.agh.edu.pl
-Temat projektu: Czat z możliwością tworzenia pokoi i zapraszania użytkowników.
+Adam Mężydło, amezydlo@student.agh.edu.pl</br>
+Maciej Sieniek, sieniek@student.agh.edu.pl</br>
+<b>Temat projektu: Czat z możliwością tworzenia pokoi i zapraszania użytkowników.</b>
 
 Technology stack:
-
 - Java
 - PostgreSQL
 - Hibernate
-
-
-
 
 
 ## Description
