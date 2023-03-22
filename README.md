@@ -2,4 +2,4 @@ A simple chat app which enables its users to create private chat rooms and invit
 
 Technology stack:
 - Java
-- PosgreSql
+- PostgreSQL
