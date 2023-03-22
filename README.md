@@ -1,5 +1,5 @@
-# bazy_danych_II_projekt
+A simple chat app which enables its users to create private chat rooms and invite other users in order to have a fully private and secure conversation.
 
-Technologie:
+Technology stack:
 - Java
 - PosgreSql
