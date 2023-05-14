@@ -9,6 +9,7 @@ Technology stack:
 - Java
 - PostgreSQL
 - Hibernate
+- Spring Boot
 
 
 ## Description
