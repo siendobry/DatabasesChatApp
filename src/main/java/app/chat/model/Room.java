@@ -5,20 +5,21 @@ import jakarta.persistence.*;
 import java.util.TreeSet;
 
 @Entity
-@Table(name="ROOMS")
+@Table(name="`ROOMS`")
 public class Room implements Comparable<Room> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="`ROOM_ID`")
     private int RoomID;
 
-    @Column(name="NAME")
+    @Column(name="`NAME`")
     private String name;
 
-    @Column(name="CAPACITY")
+    @Column(name="`CAPACITY`")
     private int capacity;
 
-    @Column(name="PASSWORD")
+    @Column(name="`PASSWORD`")
     private String password;
 
     @ManyToMany
@@ -70,4 +71,5 @@ public class Room implements Comparable<Room> {
     public int compareTo(Room o) {
         return this.name.compareTo(o.name);
     }
+
 }

@@ -6,20 +6,21 @@ import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name="MESSAGES")
+@Table(name="`MESSAGES`")
 public class Message implements Comparable<Message> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="`MESSAGE_ID`")
     private int MessageID;
 
-    @Column(name="CONTENT")
+    @Column(name="`CONTENT`")
     private String content;
 
-    @Column(name="SENT_DATE")
+    @Column(name="`SENT_DATE`")
     private Date sentDate;
 
-    @Column(name="STATE")
+    @Column(name="`STATE`")
     private MessageState state;
 
     public Message() {}
@@ -58,4 +59,5 @@ public class Message implements Comparable<Message> {
     public int compareTo(Message o) {
         return this.sentDate.compareTo(o.sentDate);
     }
+
 }

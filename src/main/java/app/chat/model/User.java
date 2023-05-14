@@ -5,16 +5,14 @@ import jakarta.persistence.*;
 import java.util.TreeSet;
 
 @Entity
-@Table(name="USERS")
+@Table(name="`USERS`")
 public class User implements Comparable<User> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int UserID;
-
-    @Column(name="USERNAME")
+    @Column(name="`USERNAME`", unique = true)
     private String username;
-    @Column(name="PASSWORD")
+
+    @Column(name="`PASSWORD`")
     private String password;
 
     @ManyToMany(mappedBy="users")
@@ -56,4 +54,5 @@ public class User implements Comparable<User> {
     public int compareTo(User o) {
         return this.username.compareTo(o.username);
     }
+
 }
