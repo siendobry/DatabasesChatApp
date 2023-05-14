@@ -2,9 +2,11 @@ package app.chat.model;
 
 import jakarta.persistence.*;
 
+import java.util.TreeSet;
+
 @Entity
-@Table(name="USER")
-public class User {
+@Table(name="USERS")
+public class User implements Comparable<User> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,6 +16,9 @@ public class User {
     private String username;
     @Column(name="PASSWORD")
     private String password;
+
+    @ManyToMany(mappedBy="users")
+    private final TreeSet<Room> rooms = new TreeSet<>();
 
     public User() {}
 
@@ -36,5 +41,19 @@ public class User {
 
     public void setUsername(String username) {
         username = username;
+    }
+
+    public void joinRoom(Room room) {
+        this.rooms.add(room);
+        room.addUser(this);
+    }
+
+    public void sendMessage(Room room, Message message) {
+        room.addMessage(message);
+    }
+
+    @Override
+    public int compareTo(User o) {
+        return this.username.compareTo(o.username);
     }
 }
