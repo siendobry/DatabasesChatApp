@@ -2,28 +2,31 @@ package app.chat.model;
 
 import app.chat.util.MessageState;
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+@Data
+@NoArgsConstructor
 @Entity
-@Table(name="`MESSAGES`")
+@Table(name="messages")
 public class Message implements Comparable<Message> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="`MESSAGE_ID`")
+    @Column(name="message_id")
     private int MessageID;
 
-    @Column(name="`CONTENT`")
+    @Column(name="content")
     private String content;
 
-    @Column(name="`SENT_DATE`")
+    @Column(name="sent_date")
     private Date sentDate;
 
-    @Column(name="`STATE`")
+    @Column(name="state")
     private MessageState state;
 
-    public Message() {}
 
     public Message(String content, Date sentDate, MessageState state) {
         this.content = content;
@@ -31,29 +34,6 @@ public class Message implements Comparable<Message> {
         this.state = state;
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Date getSentDate() {
-        return sentDate;
-    }
-
-    public void setSentDate(Date sentDate) {
-        this.sentDate = sentDate;
-    }
-
-    public MessageState getState() {
-        return state;
-    }
-
-    public void setState(MessageState state) {
-        this.state = state;
-    }
 
     @Override
     public int compareTo(Message o) {
