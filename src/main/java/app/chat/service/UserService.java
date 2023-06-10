@@ -6,22 +6,57 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
 
-    public User saveUser(User user) {
+    // GET
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    private User getUserById(Integer id) {
+        Optional<User> user = userRepository.findById(id);
+        return user.orElse(null);
+    }
+
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username).orElse(null);
+    }
+
+    private String getUsernameByUserId(Integer id) {
+        return getUserById(id).getUsername();
+    }
+
+    // POST
+
+    public User saveUser(String username, String password) {
+        User user = new User(username, password);
         return userRepository.save(user);
     }
 
-    public User getUserByName(String name) {
-        return userRepository.getReferenceById(name);
+
+    public User authenticateUser(String username, String password) {
+        User user = getUserByUsername(username);
+        if (user != null && !user.getPassword().equals(password)) {
+            return null;
+        }
+        return user;
     }
 
-    public List<User> getAllUsers(){
-        return userRepository.findAll();
+
+    public String removeUser(String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user == null)
+            return null;
+
+        userRepository.deleteById(user.getId());
+        return username;
     }
+
 
 }
