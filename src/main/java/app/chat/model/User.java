@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
 import java.util.TreeSet;
 
 @Data
@@ -13,6 +14,10 @@ import java.util.TreeSet;
 public class User implements Comparable<User> {
 
     @Id
+    @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
     @Column(name="username", unique = true)
     private String username;
 
@@ -20,7 +25,7 @@ public class User implements Comparable<User> {
     private String password;
 
     @ManyToMany(mappedBy="users")
-    private final TreeSet<Room> rooms = new TreeSet<>();
+    private final Set<Room> rooms = new TreeSet<>();
 
 
     public User(String username, String password) {
@@ -29,10 +34,11 @@ public class User implements Comparable<User> {
     }
 
 
-    public void joinRoom(Room room) {
-        this.rooms.add(room);
-        room.addUser(this);
-    }
+//    public void joinRoom(Room room) {
+//        this.rooms.add(room);
+//        room.addUser(this);
+//    }
+
 
     public void sendMessage(Room room, Message message) {
         room.addMessage(message);
