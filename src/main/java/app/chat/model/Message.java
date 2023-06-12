@@ -21,10 +21,10 @@ public class Message implements Comparable<Message> {
     @Column(name = "message_id")
     private int MessageID;
 
-    @Column(name = "content")
+    @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "sent_date")
+    @Column(name = "sent_date", nullable = false)
     private Date sentDate;
 
     @Enumerated(EnumType.STRING)

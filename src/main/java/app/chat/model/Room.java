@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -13,15 +14,24 @@ import java.util.TreeSet;
 @Table(name="rooms")
 public class Room implements Comparable<Room> {
 
+    public record RoomResponse(
+            int RoomID,
+            String name,
+            int capacity,
+            Set<String> usernames,
+            Set<Message> messages
+    ) {
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="room_id")
     private int RoomID;
 
-    @Column(name="name")
+    @Column(name="name", nullable = false)
     private String name;
 
-    @Column(name="capacity")
+    @Column(name="capacity", nullable = false, columnDefinition = "CHECK (capacity > 1)")
     private int capacity;
 
     @Column(name="password")
@@ -34,18 +44,34 @@ public class Room implements Comparable<Room> {
     private final Set<Message> messages = new TreeSet<>();
 
 
-    public Room(String name, int capacity) {
+    public Room(String name, int capacity, String password) {
         this.name = name;
         this.capacity = capacity;
+        this.password = password;
     }
 
 
-//    public void addUser(User user) {
-//        this.users.add(user);
-//    }
+    public void addUser(User user) {
+        this.users.add(user);
+    }
 
     public void addMessage(Message message) {
         this.messages.add(message);
+    }
+
+    public int noCurrentUsers() {return users.size();}
+
+    public RoomResponse convertToResponse() {
+        Set<String> usernames = users.stream()
+                .map(User::getUsername)
+                .collect(Collectors.toSet());
+        return new RoomResponse(
+                this.getRoomID(),
+                this.getName(),
+                this.getCapacity(),
+                usernames,
+                this.getMessages()
+        );
     }
 
     @Override

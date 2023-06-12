@@ -18,10 +18,10 @@ public class User implements Comparable<User> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="username", unique = true)
+    @Column(name="username", unique = true, nullable = false)
     private String username;
 
-    @Column(name="password")
+    @Column(name="password", nullable = false)
     private String password;
 
     @ManyToMany(mappedBy="users")
