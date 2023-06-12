@@ -19,4 +19,5 @@ public class RoomService {
         return roomRepository.getReferenceById(id);
     }
 
+    public void deleteRoom(Integer id) {roomRepository.deleteById(id);}
 }
