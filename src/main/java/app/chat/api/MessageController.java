@@ -22,13 +22,13 @@ public class MessageController {
     }
 
     // idk if it would be the proper path for this
-    @PostMapping("/send/{roomId}")
-    public boolean sendMessage(@RequestBody String message, @PathVariable int roomName) {
+//    @PostMapping("/send/{roomId}")
+//    public boolean sendMessage(@RequestBody String message, @PathVariable int roomName) {
+//
+//    }
 
-    }
-
-    @DeleteMapping("/delete/{roomName}/{messageId}")
-    public boolean deleteMessage(@RequestBody String message, @PathVariable String roomName, @PathVariable int messageId) {
-
-    }
+//    @DeleteMapping("/delete/{roomName}/{messageId}")
+//    public boolean deleteMessage(@RequestBody String message, @PathVariable String roomName, @PathVariable int messageId) {
+//
+//    }
 }

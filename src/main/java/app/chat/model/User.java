@@ -3,9 +3,11 @@ package app.chat.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
-import java.util.TreeSet;
 
 @Data
 @NoArgsConstructor
@@ -16,7 +18,7 @@ public class User implements Comparable<User> {
     @Id
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer UserID;
 
     @Column(name="username", unique = true, nullable = false)
     private String username;
@@ -25,7 +27,7 @@ public class User implements Comparable<User> {
     private String password;
 
     @ManyToMany(mappedBy="users")
-    private final Set<Room> rooms = new TreeSet<>();
+    private final Set<Room> rooms = new HashSet<>();
 
 
     public User(String username, String password) {
@@ -34,10 +36,22 @@ public class User implements Comparable<User> {
     }
 
 
-//    public void joinRoom(Room room) {
-//        this.rooms.add(room);
-//        room.addUser(this);
-//    }
+    public boolean joinRoom(Room room, String password) {
+        if (room.addUser(this, password)) {
+            this.rooms.add(room);
+            return true;
+        }
+        return false;
+    }
+
+
+    public boolean leaveRoom(Room room) {
+        if (room.removeUser(this)) {
+            rooms.remove(room);
+            return true;
+        }
+        return false;
+    }
 
 
     public void sendMessage(Room room, Message message) {
@@ -46,7 +60,31 @@ public class User implements Comparable<User> {
 
     @Override
     public int compareTo(User o) {
+        if (this.username == null && o.username == null) {
+            return 0;
+        } else if (this.username == null) {
+            return -1;
+        } else if (o.username == null) {
+            return 1;
+        }
         return this.username.compareTo(o.username);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        User other = (User) obj;
+        return Objects.equals(UserID, other.UserID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(UserID);
     }
 
 }

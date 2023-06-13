@@ -15,6 +15,10 @@ public class RoomService {
         return roomRepository.save(room);
     }
 
+    public Room updateRoom(Room room) {
+        return roomRepository.save(room);
+    }
+
     public Room getRoomById(Integer id) {
         return roomRepository.getReferenceById(id);
     }
