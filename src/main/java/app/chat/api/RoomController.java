@@ -51,7 +51,7 @@ public class RoomController {
         Room room = roomService.getRoomById(id);
         User user = userService.getUserByUsername(req.user.getUsername());
         if (user.joinRoom(room, req.password)) {
-            return roomService.updateRoom(room).convertToResponse();
+            return roomService.saveRoom(room).convertToResponse();
         } else {
             return null;
         }
