@@ -3,9 +3,11 @@ package app.chat.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @Data
@@ -31,17 +33,19 @@ public class Room implements Comparable<Room> {
     @Column(name="name", nullable = false)
     private String name;
 
-    @Column(name="capacity", nullable = false, columnDefinition = "CHECK (capacity > 1)")
+    // TODO add constraint/check - capacity > 1
+    @Column(name="capacity", nullable = false)
     private int capacity;
 
     @Column(name="password")
     private String password;
 
     @ManyToMany
-    private final Set<User> users = new TreeSet<>();
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private final Set<User> users = new HashSet<>();
 
     @OneToMany
-    private final Set<Message> messages = new TreeSet<>();
+    private final Set<Message> messages = new HashSet<>();
 
 
     public Room(String name, int capacity, String password) {
@@ -51,8 +55,20 @@ public class Room implements Comparable<Room> {
     }
 
 
-    public void addUser(User user) {
-        this.users.add(user);
+    public boolean addUser(User user, String password) {
+        if (Objects.equals(this.password, password) && this.users.size() < this.capacity) {
+            this.users.add(user);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeUser(User user) {
+        if (users.contains(user)) {
+            users.remove(user);
+            return true;
+        }
+        return false;
     }
 
     public void addMessage(Message message) {
@@ -76,7 +92,31 @@ public class Room implements Comparable<Room> {
 
     @Override
     public int compareTo(Room o) {
-        return this.name.compareTo(o.name);
+        if (this.name == null && o.name == null) {
+            return 0;
+        } else if (this.name == null) {
+            return -1;
+        } else if (o.name == null) {
+            return 1;
+        }
+        return Objects.compare(this.name, o.name, String::compareTo);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Room other = (Room) obj;
+        return Objects.equals(RoomID, other.RoomID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(RoomID);
     }
 
 }

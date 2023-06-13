@@ -25,9 +25,13 @@ public class UserService {
 
 
     // POST
-
+    // TODO adding a user with existing username should be handled
     public User saveUser(String username, String password) {
         User user = new User(username, password);
+        return userRepository.save(user);
+    }
+
+    public User updateUser(User user) {
         return userRepository.save(user);
     }
 
@@ -46,7 +50,7 @@ public class UserService {
         if (user == null)
             return null;
 
-        userRepository.deleteById(user.getId());
+        userRepository.deleteById(user.getUserID());
         return username;
     }
 
