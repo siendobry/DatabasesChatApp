@@ -83,11 +83,11 @@ public class Room implements Comparable<Room> {
                 .map(User::getUsername)
                 .collect(Collectors.toSet());
         return new RoomResponse(
-                this.getRoomID(),
-                this.getName(),
-                this.getCapacity(),
+                this.RoomID,
+                this.name,
+                this.capacity,
                 usernames,
-                this.getMessages()
+                this.messages
         );
     }
 

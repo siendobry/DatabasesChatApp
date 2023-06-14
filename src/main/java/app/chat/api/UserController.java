@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -18,15 +19,18 @@ public class UserController {
 
     // GET
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public List<User.UserResponse> getAllUsers() {
+        return userService.getAllUsers().stream().map(User::convertToResponse).collect(Collectors.toList());
     }
 
 
     @GetMapping("/{username}")
-    public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
+    public ResponseEntity<User.UserResponse> getUserByUsername(@PathVariable String username) {
         User user = userService.getUserByUsername(username);
-        return createResponse(user);
+        if (user == null) {
+            return createResponse(null);
+        }
+        return createResponse(user.convertToResponse());
     }
 
     // POST
@@ -41,24 +45,27 @@ public class UserController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody UserRequest request) {
+    public ResponseEntity<User.UserResponse> register(@RequestBody UserRequest request) {
         User user = userService.saveUser(request.username(), request.password());
-        return createResponse(user);
+        return createResponse(user.convertToResponse());
     }
 
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody UserRequest request) {
+    public ResponseEntity<User.UserResponse> login(@RequestBody UserRequest request) {
         User user = userService.authenticateUser(request.username(), request.password());
-        return createResponse(user);
+        if (user == null) {
+            return createResponse(null);
+        }
+        return createResponse(user.convertToResponse());
     }
 
 
     // DELETE User knows their id which is returned in User object
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteAccount(@RequestBody User request) {
+    public ResponseEntity<String> deleteAccount(@RequestBody User.UserResponse request) {
 
-        String deletedUser = userService.removeUser(request.getUsername());
+        String deletedUser = userService.removeUser(request.username());
         if (deletedUser == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -73,11 +80,11 @@ public class UserController {
 
 
 
-    private ResponseEntity<User> createResponse(User user) {
-        if (user == null) {
+    private ResponseEntity<User.UserResponse> createResponse(User.UserResponse userResponse) {
+        if (userResponse == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
 }
