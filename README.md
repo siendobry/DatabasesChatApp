@@ -588,29 +588,34 @@ W implementacji API uwzględnione zostały następujące endpointy:
 ## Przykłady użycia API
 
 **Rooms**
-- `GET http://localhost:10001/api/rooms/1`
-    
-    - Odpowiedź serwera:
-
-        ```json
-        {
-            "id": 1
-        }
-        ```
-
 - `POST http://localhost:10001/api/rooms/create`
     
     - Ciało zapytania:
         ```json
+        {
+            "creator":
             {
-                "id": 1
-            }
+                "id": 1,
+                "username": "Kasztan",
+                "password": "123",
+                "rooms": []
+            },
+            "name": "room1",
+            "capacity": "5",
+            "password": "123"
+        }
         ```
     - Odpowiedź serwera:
 
         ```json
         {
-            "id": 1
+            "RoomID": 1,
+            "name": "room1",
+            "capacity": 5,
+            "usernames": [
+        "Kasztan"
+            ],
+            "messages": []
         }
         ```
 
@@ -619,15 +624,29 @@ W implementacji API uwzględnione zostały następujące endpointy:
     
     - Ciało zapytania:
         ```json
+        {
+            "user":
             {
-                "id": 1
-            }
+                "id": 2,
+                "username": "Puma",
+                "password": "123",
+                "rooms": []
+            },
+            "password": "123"
+        }
         ```
     - Odpowiedź serwera:
 
         ```json
         {
-            "id": 1
+            "RoomID": 1,
+            "name": "room1",
+            "capacity": 5,
+            "usernames": [
+        "Kasztan",
+        "Puma"
+         ],
+            "messages": []
         }
         ```
 
@@ -636,59 +655,40 @@ W implementacji API uwzględnione zostały następujące endpointy:
     
     - Ciało zapytania:
         ```json
-            {
-                "id": 1
-            }
+        {
+            "id": 1,
+            "username": "Kasztan",
+            "password": "123",
+            "rooms": 
+            [
+                 1
+            ]
+        }
         ```
     - Odpowiedź serwera:
 
         ```json
-        {
-            "id": 1
-        }
+        You have left the room
         ```
 
 **Users**
-- `GET http://localhost:10001/api/users`
-    
-    - Odpowiedź serwera:
-
-        ```json
-        {
-            "id": 1
-        }
-        ```
-
-- `GET http://localhost:10001/api/users/Maciek`
-    
-    - Ciało zapytania:
-        ```json
-            {
-                "id": 1
-            }
-        ```
-    - Odpowiedź serwera:
-
-        ```json
-        {
-            "id": 1
-        }
-        ```
-
-
 - `POST http://localhost:10001/api/users/register`
     
     - Ciało zapytania:
         ```json
-            {
-                "id": 1
-            }
+        {
+            "username": "Kasztan",
+            "password": "123"
+        }
         ```
     - Odpowiedź serwera:
 
         ```json
         {
-            "id": 1
+            "username": "Kasztan",
+            "password": "123",
+            "rooms": [],
+            "userID": 1
         }
         ```
 
@@ -697,15 +697,19 @@ W implementacji API uwzględnione zostały następujące endpointy:
     
     - Ciało zapytania:
         ```json
-            {
-                "id": 1
-            }
+        {
+            "username": "Kasztan",
+            "password": "123"
+        }
         ```
     - Odpowiedź serwera:
 
         ```json
         {
-            "id": 1
+            "username": "Kasztan",
+            "password": "123",
+            "rooms": [],
+            "userID": 1
         }
         ```
 
@@ -713,15 +717,21 @@ W implementacji API uwzględnione zostały następujące endpointy:
     
     - Ciało zapytania:
         ```json
-            {
-                "id": 1
-            }
+        {
+            "id": 2,
+            "username": "Puma",
+            "password": "123",
+            "rooms": []
+        }
         ```
     - Odpowiedź serwera:
 
         ```json
         {
-            "id": 1
+            "id": 2,
+            "username": "Puma",
+            "password": "123",
+            "rooms": []
         }
         ```
 
