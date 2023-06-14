@@ -62,7 +62,8 @@ CREATE TABLE public.rooms (
 
 ALTER TABLE public.rooms OWNER TO postgres;
 
-ALTER TABLE ONLY public.rooms ALTER COLUMN room_id SET DEFAULT nextval('public.rooms_room_id_seq'::regclass);
+ALTER TABLE ONLY public.rooms ALTER COLUMN room_id 
+    SET DEFAULT nextval('public.rooms_room_id_seq'::regclass);
 
 ALTER TABLE ONLY public.rooms
     ADD CONSTRAINT rooms_pkey PRIMARY KEY (room_id);
