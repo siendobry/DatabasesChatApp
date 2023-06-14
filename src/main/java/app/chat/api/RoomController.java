@@ -40,14 +40,14 @@ public class RoomController {
     }
 
     @GetMapping("/{id}")
-    public Room.RoomResponse getRoomById(@PathVariable int id) {
+    public Room.RoomResponse getRoomById(@PathVariable Integer id) {
         return roomService.getRoomById(id).convertToResponse();
     }
 
     // what is this supposed to return??????
     @PostMapping("/{id}/join")
     @Transactional
-    public Room.RoomResponse joinRoom(@RequestBody JoinRequest req, @PathVariable int id) {
+    public Room.RoomResponse joinRoom(@RequestBody JoinRequest req, @PathVariable Integer id) {
         Room room = roomService.getRoomById(id);
         User user = userService.getUserByUsername(req.user.getUsername());
         if (user.joinRoom(room, req.password)) {
