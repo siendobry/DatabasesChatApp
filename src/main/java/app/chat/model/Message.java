@@ -4,7 +4,6 @@ import app.chat.util.MessageState;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,21 +20,24 @@ public class Message implements Comparable<Message> {
     @Column(name = "message_id")
     private int MessageID;
 
+    @Column(name = "sender", nullable = false)
+    private String sender;
+
     @Column(name = "content", nullable = false)
     private String content;
 
     @Column(name = "sent_date", nullable = false)
     private Date sentDate;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "state", nullable = false)
-    private MessageState state;
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "state", nullable = false)
+//    private MessageState state;
 
 
-    public Message(String content, Date sentDate, MessageState state) {
+    public Message(String sender, String content, Date sentDate) {
+        this.sender = sender;
         this.content = content;
         this.sentDate = sentDate;
-        this.state = state;
     }
 
 

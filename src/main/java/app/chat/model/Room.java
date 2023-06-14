@@ -45,6 +45,7 @@ public class Room implements Comparable<Room> {
     private final Set<User> users = new HashSet<>();
 
     @OneToMany
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private final Set<Message> messages = new HashSet<>();
 
 
