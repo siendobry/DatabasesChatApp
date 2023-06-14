@@ -396,7 +396,7 @@ Do zamodelowania danych użyte zostały adnotacje Lombork, Hibernate oraz Spring
 
 ### API
 
-W implementacji REST API uwzględnione zostały następujące endpointy:
+W implementacji API uwzględnione zostały następujące endpointy:
 - **RoomController**
   - GET       /api/rooms/{id}         - pobieranie z bazy danych obiektu pokoju o zadanym `id`
   - POST      /api/rooms/create       - stworzenie nowego pokoju
@@ -564,7 +564,7 @@ W implementacji REST API uwzględnione zostały następujące endpointy:
     }
   ```
 
-Aby **ChatController** poprawnie obsługiwał wiadomości, musi zostać skonfigurowany w klasie `WebSocketConfig`
+    Aby **ChatController** poprawnie obsługiwał wiadomości, musi zostać skonfigurowany w klasie `WebSocketConfig`
 
 
 - **WebSocketConfig**
@@ -585,3 +585,171 @@ Aby **ChatController** poprawnie obsługiwał wiadomości, musi zostać skonfigu
         }
     }
   ```
+## Przykłady użycia API
+
+**Rooms**
+- `GET http://localhost:10001/api/rooms/1`
+    
+    - Odpowiedź serwera:
+
+        ```json
+        {
+            "id": 1
+        }
+        ```
+
+- `POST http://localhost:10001/api/rooms/create`
+    
+    - Ciało zapytania:
+        ```json
+            {
+                "id": 1
+            }
+        ```
+    - Odpowiedź serwera:
+
+        ```json
+        {
+            "id": 1
+        }
+        ```
+
+
+- `POST http://localhost:10001/api/rooms/1/join`
+    
+    - Ciało zapytania:
+        ```json
+            {
+                "id": 1
+            }
+        ```
+    - Odpowiedź serwera:
+
+        ```json
+        {
+            "id": 1
+        }
+        ```
+
+
+- `POST http://localhost:10001/api/rooms/1/leave`
+    
+    - Ciało zapytania:
+        ```json
+            {
+                "id": 1
+            }
+        ```
+    - Odpowiedź serwera:
+
+        ```json
+        {
+            "id": 1
+        }
+        ```
+
+**Users**
+- `GET http://localhost:10001/api/users`
+    
+    - Odpowiedź serwera:
+
+        ```json
+        {
+            "id": 1
+        }
+        ```
+
+- `GET http://localhost:10001/api/users/Maciek`
+    
+    - Ciało zapytania:
+        ```json
+            {
+                "id": 1
+            }
+        ```
+    - Odpowiedź serwera:
+
+        ```json
+        {
+            "id": 1
+        }
+        ```
+
+
+- `POST http://localhost:10001/api/users/register`
+    
+    - Ciało zapytania:
+        ```json
+            {
+                "id": 1
+            }
+        ```
+    - Odpowiedź serwera:
+
+        ```json
+        {
+            "id": 1
+        }
+        ```
+
+
+- `POST http://localhost:10001/api/users/login`
+    
+    - Ciało zapytania:
+        ```json
+            {
+                "id": 1
+            }
+        ```
+    - Odpowiedź serwera:
+
+        ```json
+        {
+            "id": 1
+        }
+        ```
+
+- `DELETE http://localhost:10001/api/users/delete`
+    
+    - Ciało zapytania:
+        ```json
+            {
+                "id": 1
+            }
+        ```
+    - Odpowiedź serwera:
+
+        ```json
+        {
+            "id": 1
+        }
+        ```
+
+
+**Messages**
+
+Tutaj z uwagi na wykorzystanie `Spring WebSockets` oraz protokołu `STOMP` potrzebny jest klient, który poprawnie nawiąże połączenie z gniazdem serwera, w tym celu stworzony został następujący skrypt w języku JavaScript:
+
+
+Łączenie aplikacji frontendowej z serwerem poprzez gniazdo i subskrypcja wybranego czatu (w celach testowych)
+
+```js
+function connect() {
+    const socket = new SockJS('http://localhost:10001/ws');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function () {
+        stompClient.subscribe(`/chatroom/${roomid}`, function (message) {
+            addMessage(JSON.parse(message.body));
+        })
+    })
+}    
+```
+
+Wysłanie wiadomości do serwera
+
+```js
+stompClient.send(`/app/${roomid}`, {}, JSON.stringify(messageObj));
+```
+
+
+W plikach źródłowych dołączona została prosta strona HTML służąca do testowania mechanizmu wysyłania wiadomości.
