@@ -138,7 +138,7 @@ Opis kolumn:
 |message_id **PK** |automatycznie wygenerowane **ID** wiadomości          | 
 |content           |treść wiadomości                                      |
 |sent_date         |data wysłania wiadomości                              |
-|state             |stan wysłania (*ERROR*, *PENDING*, *SENT*, *RECEIVED*) |
+|state             |stan wysłania (*ERROR*, *PENDING*, *SENT*, *RECEIVED*)|
 
 DDL:
 
@@ -176,10 +176,10 @@ Przykładowe dane:
 
 Opis kolumn:
 
-|Kolumna        |Opis                                                  |
-|---------------|------------------------------------------------------|
-|room_room_id **PK**        |wraz z messages_message_id tworzy klucz główny złożony         | 
-|messages_message_id **PK** |wraz z room_room_id tworzy klucz główny złożony|
+|Kolumna                    |Opis                                                  |
+|---------------------------|------------------------------------------------------|
+|room_room_id **PK**        |wraz z messages_message_id tworzy klucz główny złożony| 
+|messages_message_id **PK** |wraz z room_room_id tworzy klucz główny złożony       |
 
 
 
@@ -203,11 +203,13 @@ ALTER TABLE ONLY public.rooms_messages
     ADD CONSTRAINT uk_bia0hyy52d771gr2c33uy7qc UNIQUE (messages_message_id);
 
 ALTER TABLE ONLY public.rooms_messages
-    ADD CONSTRAINT fk2dji8l9p308w6un0658yqesrf FOREIGN KEY (room_room_id) REFERENCES public.rooms(room_id);
+    ADD CONSTRAINT fk2dji8l9p308w6un0658yqesrf FOREIGN KEY (room_room_id) 
+        REFERENCES public.rooms(room_id);
 
 
 ALTER TABLE ONLY public.rooms_messages
-    ADD CONSTRAINT fk5gommedfr14nu4y74hgilsowd FOREIGN KEY (messages_message_id) REFERENCES public.messages(message_id);
+    ADD CONSTRAINT fk5gommedfr14nu4y74hgilsowd FOREIGN KEY (messages_message_id) 
+        REFERENCES public.messages(message_id);
 
 ```
 
@@ -228,10 +230,10 @@ Przykładowe dane:
 
 Opis kolumn:
 
-|Kolumna        |Opis                                                  |
-|---------------|------------------------------------------------------|
-|rooms_room_id **PK**        |wraz z rooms_room_id tworzy klucz główny złożony         | 
-|users_user_id **PK** |wraz z users_user_id tworzy klucz główny złożony|
+|Kolumna               |Opis                                                  |
+|----------------------|------------------------------------------------------|
+|rooms_room_id **PK**  |wraz z rooms_room_id tworzy klucz główny złożony      | 
+|users_user_id **PK**  |wraz z users_user_id tworzy klucz główny złożony      |
 
 
 
@@ -252,11 +254,13 @@ ALTER TABLE ONLY public.rooms_users
 
 
 ALTER TABLE ONLY public.rooms_users
-    ADD CONSTRAINT fkj74qd3fh8t91h2rqugym2aukr FOREIGN KEY (rooms_room_id) REFERENCES public.rooms(room_id);
+    ADD CONSTRAINT fkj74qd3fh8t91h2rqugym2aukr FOREIGN KEY (rooms_room_id) 
+        REFERENCES public.rooms(room_id);
 
 
 ALTER TABLE ONLY public.rooms_users
-    ADD CONSTRAINT fkonfvsoo49ldsby39eibxeg7a3 FOREIGN KEY (users_user_id) REFERENCES public.users(user_id);
+    ADD CONSTRAINT fkonfvsoo49ldsby39eibxeg7a3 FOREIGN KEY (users_user_id) 
+        REFERENCES public.users(user_id);
 ```
 
 
