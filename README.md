@@ -27,7 +27,7 @@ Pokoje, w których nie ma użytkowników, zostają automatycznie usuwane.
 
 **Backend:** Java, Spring Boot, PostgreSQL
 
-**Frontend:** ReactJS (?)
+**Frontend:** HTML + JS (do testowania WebSocketów) 
 
 
 ## Struktura bazy danych
@@ -403,6 +403,76 @@ W implementacji REST API uwzględnione zostały następujące endpointy:
   - POST      /api/rooms/{id}/join    - dołączenie do wskazanego przez `id` pokoju
   - POST      /api/rooms{id}/leave    - opuszczenie pokoju o danym `id`
 
+
+  ```Java
+    @RestController
+    @RequestMapping("/api/rooms")
+    @RequiredArgsConstructor
+    public class RoomController {
+    private final RoomService roomService;
+    private final UserService userService;
+
+    record RoomCreateRequest(
+            User creator,
+            String name,
+            int capacity,
+            String password
+    ) {
+    }
+
+    record JoinRequest(
+            User user,
+            String password
+    ) {
+    }
+
+    
+    @PostMapping("/create")
+    public Room.RoomResponse createRoom(@RequestBody RoomCreateRequest req) {
+        Room newRoom = new Room(req.name, req.capacity, req.password);
+        User user = userService.getUserByUsername(req.creator.getUsername());
+        newRoom.addUser(user, req.password);
+        return roomService.saveRoom(newRoom).convertToResponse();
+    }
+
+    @GetMapping("/{id}")
+    public Room.RoomResponse getRoomById(@PathVariable Integer id) {
+        return roomService.getRoomById(id).convertToResponse();
+    }
+
+    @PostMapping("/{id}/join")
+    @Transactional
+    public Room.RoomResponse joinRoom(@RequestBody JoinRequest req, @PathVariable Integer id) {
+        Room room = roomService.getRoomById(id);
+        User user = userService.getUserByUsername(req.user.getUsername());
+        if (user.joinRoom(room, req.password)) {
+            return roomService.saveRoom(room).convertToResponse();
+        } else {
+            return null;
+        }
+    }
+
+    @PostMapping("/{id}/leave")
+    @Transactional
+    public String leaveRoom(@RequestBody User passedUser, @PathVariable int id) {
+        Room room = roomService.getRoomById(id);
+        User user = userService.getUserByUsername(passedUser.getUsername());
+        if (user.leaveRoom(room)) {
+            if (room.noCurrentUsers() == 0) {
+                roomService.deleteRoom(id);
+            }
+            return "You have left the room";
+        }
+        return "Could not leave the room";
+        }
+    }
+  ```
+
+    W powyższym kodzie stworzone zostały rekordy przedstawiające strukturę requestów - metoda GET przekonwertuje plik JSON zawarty w ciele zapytania na odpowiedni rekord.
+
+    Następnie zdefiinowane zostały mapowania odpowiednich enpointów i dla każdego wywoływana jest funkcja obsługująca dany endpoint.
+
+
 - **UserController**
   - GET       /api/users              - pobieranie z bazy danych listę wszystkich użytkowników
   - GET       /api/users/{username}   - pobieranie użytkownika z bazy danych po `username`
@@ -411,6 +481,65 @@ W implementacji REST API uwzględnione zostały następujące endpointy:
   - DELETE    /api/users/delete       - usunięcie użytkownika, szczegóły należy podać w ciele żądania
 
 
+    ```Java
+    @RestController
+    @RequestMapping("/api/users")
+    @RequiredArgsConstructor
+    public class UserController {
+        private final UserService userService;
+
+
+        record UserRequest(
+            String username,
+            String password
+        ) {
+        }
+
+        // GET
+        @GetMapping
+        public List<User> getAllUsers() {
+            return userService.getAllUsers();
+        }
+
+
+        @GetMapping("/{username}")
+        public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
+            User user = userService.getUserByUsername(username);
+            return createResponse(user);
+        }
+
+        // POST
+
+        @PostMapping("/register")
+        public ResponseEntity<User> register(@RequestBody UserRequest request) {
+            User user = userService.saveUser(request.username(), request.password());
+            return createResponse(user);
+        }
+
+
+        @PostMapping("/login")
+        public ResponseEntity<User> login(@RequestBody UserRequest request) {
+            User user = userService.authenticateUser(request.username(), request.password());
+            return createResponse(user);
+        }
+
+
+        // DELETE User knows their id which is returned in User object
+        @DeleteMapping("/delete")
+        public ResponseEntity<String> deleteAccount(@RequestBody User request) {
+
+            String deletedUser = userService.removeUser(request.getUsername());
+            if (deletedUser == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(deletedUser, HttpStatus.OK);
+        }
+    }
+    ```
+
+    Na początku tworzony jest rekord UserRequest, który posłuży za strukturę danych dla wszystkich zapytań związanych z użytkownikiem.
+
+    Następnie obsługiwane są mapowania kolejnych endpointów i wykonywane odpowiednie metody dla każdego z nich.
 
 
 - **ChatController**
@@ -418,21 +547,21 @@ W implementacji REST API uwzględnione zostały następujące endpointy:
   Kontroler służący do komunikacji z klientem poprzez WebSockets. Serwer nasłuchuje wiadomości na endpoincie `/app/chatroom/{roomId} i wysyła otrzymaną wiadomość do wszystkich klientów, którzy zasubskrybowali endpoint: /chatroom/{roomId}. Dzięki temu wiadomości przychodzące do danego pokoju są rozsyłane do pozostałych uczestników czatu.
 
   ```Java
-      @Controller
-      @RequiredArgsConstructor
-      public class ChatController {
-      private final RoomService roomService;
+    @Controller
+    @RequiredArgsConstructor
+    public class ChatController {
+    private final RoomService roomService;
 
-      @MessageMapping("/{roomId}")
-      @SendTo("/chatroom/{roomId}")
-      @Transactional
-      public Message receiveMessage(@DestinationVariable Integer roomId, @Payload Message message) {
-          Room room = roomService.getRoomById(roomId);
-          message.setSentDate(new Date());
-          room.addMessage(message);
-          roomService.saveRoom(room);
-          return message;
-      }
+    @MessageMapping("/{roomId}")
+    @SendTo("/chatroom/{roomId}")
+    @Transactional
+    public Message receiveMessage(@DestinationVariable Integer roomId, @Payload Message message) {
+        Room room = roomService.getRoomById(roomId);
+        message.setSentDate(new Date());
+        room.addMessage(message);
+        roomService.saveRoom(room);
+        return message;
+    }
   ```
 
 Aby **ChatController** poprawnie obsługiwał wiadomości, musi zostać skonfigurowany w klasie `WebSocketConfig`
