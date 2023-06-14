@@ -25,9 +25,9 @@ Do każdego pokoju może dołączyć ograniczona liczba użytkowników znającyc
 Pokoje, w których nie ma użytkowników, zostają automatycznie usuwane.
 ## Stos technologiczny
 
-**Backend:** Java, Spring Boot, PostgreSQL
+- **Backend:** Java, Spring Boot, PostgreSQL
 
-**Frontend:** HTML + JS (do testowania WebSocketów) 
+- **Frontend:** HTML + JS (do testowania WebSocketów) 
 
 
 ## Struktura bazy danych
