@@ -8,12 +8,21 @@ import org.hibernate.annotations.Cascade;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
 @Entity
 @Table(name="users")
 public class User implements Comparable<User> {
+
+    public record UserResponse(
+            int UserID,
+            String username,
+            String password,
+            Set<Integer> roomIds
+    ) {
+    }
 
     @Id
     @Column(name = "user_id")
@@ -27,6 +36,7 @@ public class User implements Comparable<User> {
     private String password;
 
     @ManyToMany(mappedBy="users")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private final Set<Room> rooms = new HashSet<>();
 
 
@@ -56,6 +66,18 @@ public class User implements Comparable<User> {
 
     public void sendMessage(Room room, Message message) {
         room.addMessage(message);
+    }
+
+    public UserResponse convertToResponse() {
+        Set<Integer> roomIds = rooms.stream()
+                .map(Room::getRoomID)
+                .collect(Collectors.toSet());
+        return new UserResponse(
+                this.UserID,
+                this.username,
+                this.password,
+                roomIds
+        );
     }
 
     @Override

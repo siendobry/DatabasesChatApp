@@ -59,9 +59,9 @@ public class RoomController {
 
     @PostMapping("/{id}/leave")
     @Transactional
-    public String leaveRoom(@RequestBody User passedUser, @PathVariable int id) {
+    public String leaveRoom(@RequestBody User.UserResponse passedUser, @PathVariable int id) {
         Room room = roomService.getRoomById(id);
-        User user = userService.getUserByUsername(passedUser.getUsername());
+        User user = userService.getUserByUsername(passedUser.username());
         if (user.leaveRoom(room)) {
             if (room.noCurrentUsers() == 0) {
                 roomService.deleteRoom(id);
