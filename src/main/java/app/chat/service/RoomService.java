@@ -1,6 +1,7 @@
 package app.chat.service;
 
 import app.chat.model.Room;
+import app.chat.model.User;
 import app.chat.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
